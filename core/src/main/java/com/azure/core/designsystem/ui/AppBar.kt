@@ -1,4 +1,4 @@
-package com.azure.core.ui
+package com.azure.core.designsystem.ui
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
@@ -23,8 +23,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import com.azure.core.theme.PokeDecsTheme
-import com.azure.core.theme.TextSecondary
+import com.azure.core.designsystem.theme.PokeDecsTheme
+import com.azure.core.designsystem.theme.TextSecondary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

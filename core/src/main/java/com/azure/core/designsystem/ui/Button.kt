@@ -1,4 +1,4 @@
-package com.azure.core.ui
+package com.azure.core.designsystem.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.azure.core.theme.PokeDecsTheme
+import com.azure.core.designsystem.theme.PokeDecsTheme
 
 @Composable
 fun PokeButton(

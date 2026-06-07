@@ -27,12 +27,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.azure.core.theme.PokeDecsTheme
-import com.azure.core.theme.TextSecondary
-import com.azure.core.ui.PokeButton
-import com.azure.core.ui.PokePasswordTextField
-import com.azure.core.ui.PokeTextButton
-import com.azure.core.ui.PokeTextField
+import com.azure.core.designsystem.theme.PokeDecsTheme
+import com.azure.core.designsystem.theme.TextSecondary
+import com.azure.core.designsystem.ui.PokeButton
+import com.azure.core.designsystem.ui.PokePasswordTextField
+import com.azure.core.designsystem.ui.PokeTextButton
+import com.azure.core.designsystem.ui.PokeTextField
 
 @Composable
 fun LoginScreen(

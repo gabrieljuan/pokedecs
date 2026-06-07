@@ -1,4 +1,4 @@
-package com.azure.core.theme
+package com.azure.core.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 
