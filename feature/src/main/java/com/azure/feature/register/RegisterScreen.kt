@@ -48,7 +48,9 @@ fun RegisterRoute(
     val viewState = viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(viewState.value.isRegisterSuccess) {
-        onRegisterSuccess(viewState.value.username)
+        if (viewState.value.isRegisterSuccess) {
+            onRegisterSuccess(viewState.value.username)
+        }
     }
     RegisterScreen(
         isLoading = viewState.value.isLoading,
