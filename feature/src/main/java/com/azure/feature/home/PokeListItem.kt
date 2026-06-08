@@ -1,4 +1,4 @@
-package com.azure.feature.list
+package com.azure.feature.home
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

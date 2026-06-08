@@ -30,6 +30,7 @@ android {
 
 dependencies {
     implementation(project(":core"))
+    implementation(project(":domain"))
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.compose.foundation)
@@ -41,6 +42,7 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
     implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     ksp(libs.hilt.compiler)
 
