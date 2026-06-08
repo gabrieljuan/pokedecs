@@ -41,7 +41,7 @@ class RegisterViewModel @Inject constructor(
                             isRegisterSuccess = true,
                             username = result.value.username,
                             isLoading = false,
-                            errorMessage = ""
+                            errorMessage = null
                         )
                     }
                 }
@@ -56,6 +56,11 @@ class RegisterViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+    fun onErrorShown() {
+        _uiState.update {
+            it.copy(errorMessage = null)
         }
     }
 }

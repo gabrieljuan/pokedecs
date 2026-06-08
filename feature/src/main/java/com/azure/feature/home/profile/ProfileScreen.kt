@@ -33,11 +33,18 @@ import com.azure.feature.R
 fun ProfileScreen(
     username: String,
     modifier: Modifier = Modifier,
+    onErrorMessage: (String) -> Unit,
 ) {
     val viewModel = hiltViewModel<ProfileViewModel>()
     val viewState = viewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
         viewModel.getProfile(username)
+    }
+    LaunchedEffect(viewState.value.errorMessage) {
+        viewState.value.errorMessage?.let {
+            onErrorMessage(it)
+            viewModel.onErrorShown()
+        }
     }
 
     Column(
@@ -72,6 +79,7 @@ fun ProfileScreen(
         )
     }
 }
+
 @Composable
 fun ProfileInfo(
     icon: ImageVector,
@@ -98,7 +106,7 @@ fun ProfileInfo(
 
 @Preview(showBackground = true)
 @Composable
-private fun ProfileInfoPreview(){
+private fun ProfileInfoPreview() {
     PokeDecsTheme {
         ProfileInfo(
             modifier = Modifier.fillMaxWidth(),

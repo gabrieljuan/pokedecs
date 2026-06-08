@@ -3,6 +3,7 @@ package com.azure.feature.detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.azure.domain.usecase.GetPokeDetailUseCase
+import com.azure.domain.util.DEFAULT_ERROR
 import com.azure.domain.util.DataResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PokeDetailViewModel @Inject constructor(
     private val getPokeDetailUseCase: GetPokeDetailUseCase
-): ViewModel() {
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PokeDetailViewState())
     val uiState: StateFlow<PokeDetailViewState> = _uiState
@@ -28,7 +29,7 @@ class PokeDetailViewModel @Inject constructor(
                         it.copy(
                             pokeDetail = result.value,
                             isLoading = false,
-                            isError = false,
+                            errorMessage = null,
                         )
                     }
                 }
@@ -36,11 +37,17 @@ class PokeDetailViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            isError = true,
+                            errorMessage = result.throwable.message ?: DEFAULT_ERROR,
                         )
                     }
                 }
             }
+        }
+    }
+
+    fun onErrorShown() {
+        _uiState.update {
+            it.copy(errorMessage = null)
         }
     }
 }

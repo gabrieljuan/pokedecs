@@ -29,7 +29,7 @@ class LoginViewModel @Inject constructor(
                             isLoading = false,
                             isLoginSuccess = true,
                             username = result.value.username,
-                            errorMessage = ""
+                            errorMessage = null,
                         )
                     }
                 }
@@ -43,6 +43,12 @@ class LoginViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun onErrorShown() {
+        _uiState.update {
+            it.copy(errorMessage = null)
         }
     }
 }

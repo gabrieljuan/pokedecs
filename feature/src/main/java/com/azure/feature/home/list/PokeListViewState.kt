@@ -7,5 +7,5 @@ data class PokeListViewState(
     val isLoading: Boolean = true,
     val pokeList: List<Poke> = listOf(),
     val isFromCache: Boolean = false,
-    val isNetworkError: Boolean = false,
+    val errorMessage: String? = null,
 )

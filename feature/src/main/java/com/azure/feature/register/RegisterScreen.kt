@@ -4,12 +4,13 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Mail
 import androidx.compose.material.icons.outlined.PersonOutline
@@ -17,16 +18,19 @@ import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -43,11 +47,12 @@ fun RegisterRoute(
     val viewModel = hiltViewModel<RegisterViewModel>()
     val viewState = viewModel.uiState.collectAsStateWithLifecycle()
 
-    if (viewState.value.isRegisterSuccess) {
+    LaunchedEffect(viewState.value.isRegisterSuccess) {
         onRegisterSuccess(viewState.value.username)
     }
     RegisterScreen(
         isLoading = viewState.value.isLoading,
+        errorMessage = viewState.value.errorMessage,
         onSignUpClick = { username, password, email, phone, about ->
             viewModel.register(
                 username = username,
@@ -57,13 +62,15 @@ fun RegisterRoute(
                 about = about,
             )
         },
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        onErrorShown = viewModel::onErrorShown
     )
 }
 
 @Composable
 fun RegisterScreen(
     isLoading: Boolean,
+    errorMessage: String?,
     modifier: Modifier = Modifier,
     onSignUpClick: (
         username: String,
@@ -73,26 +80,38 @@ fun RegisterScreen(
         about: String,
     ) -> Unit,
     onBackClick: () -> Unit,
+    onErrorShown: () -> Unit,
 ) {
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
     var phone by rememberSaveable { mutableStateOf("") }
     var about by rememberSaveable { mutableStateOf("") }
-
+    val scrollState = rememberScrollState()
+    val snackBarHostState = remember { SnackbarHostState() }
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let {
+            snackBarHostState.showSnackbar(it)
+            onErrorShown()
+        }
+    }
     Scaffold(
         modifier = modifier,
+        snackbarHost = {
+            SnackbarHost(
+                modifier = Modifier.imePadding(),
+                hostState = snackBarHostState
+            )
+        },
         containerColor = MaterialTheme.colorScheme.background,
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    top = paddingValues.calculateTopPadding() + 8.dp,
-                    bottom = paddingValues.calculateBottomPadding() + 8.dp,
-                    start = paddingValues.calculateStartPadding(LayoutDirection.Ltr) + 16.dp,
-                    end = paddingValues.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
-                ),
+                .padding(paddingValues)
+                .imePadding()
+                .verticalScroll(scrollState)
+                .padding(vertical = 8.dp, horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -166,10 +185,12 @@ private fun SignUpScreenPreview() {
     PokeDecsTheme {
         RegisterScreen(
             isLoading = false,
+            errorMessage = null,
             onSignUpClick = { _, _, _, _, _ ->
 
             },
-            onBackClick = {}
+            onBackClick = {},
+            onErrorShown = {},
         )
     }
 }

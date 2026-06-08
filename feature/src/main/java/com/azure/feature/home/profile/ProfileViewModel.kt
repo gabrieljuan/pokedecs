@@ -3,6 +3,7 @@ package com.azure.feature.home.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.azure.domain.usecase.GetProfileUseCase
+import com.azure.domain.util.DEFAULT_ERROR
 import com.azure.domain.util.DataResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +28,7 @@ class ProfileViewModel @Inject constructor(
                         it.copy(
                             user = result.value,
                             isLoading = false,
-                            isError = false,
+                            errorMessage = null,
                         )
                     }
                 }
@@ -36,11 +37,16 @@ class ProfileViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            isError = true,
+                            errorMessage = result.throwable.message ?: DEFAULT_ERROR,
                         )
                     }
                 }
             }
+        }
+    }
+    fun onErrorShown() {
+        _uiState.update {
+            it.copy(errorMessage = null)
         }
     }
 }

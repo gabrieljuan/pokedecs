@@ -15,9 +15,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,7 +50,8 @@ fun PokeDetailRoute(
     PokeDetailScreen(
         pokeDetail = viewState.value.pokeDetail,
         isLoading = viewState.value.isLoading,
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        onErrorShown = viewModel::onErrorShown
     )
     BackHandler(onBack = onBackClick)
 }
@@ -57,12 +61,22 @@ fun PokeDetailScreen(
     pokeDetail: PokeDetail,
     isLoading: Boolean,
     modifier: Modifier = Modifier,
+    errorMessage: String? = null,
     onBackClick: () -> Unit,
+    onErrorShown: () -> Unit,
 ) {
+    val snackBarHostState = remember { SnackbarHostState() }
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let {
+            snackBarHostState.showSnackbar(it)
+            onErrorShown()
+        }
+    }
     Scaffold(
         topBar = {
             AppBar(onBackClick = onBackClick)
-        }
+        },
+        snackbarHost = { SnackbarHost(snackBarHostState) }
     ) { paddingValues ->
         if (isLoading) {
             LoadingState(

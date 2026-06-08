@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.azure.domain.model.Poke
 import com.azure.domain.usecase.GetPokeDetailUseCase
 import com.azure.domain.usecase.GetPokeListUseCase
+import com.azure.domain.util.DEFAULT_ERROR
 import com.azure.domain.util.DataResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,7 +48,7 @@ class PokeListViewModel @Inject constructor(
                         it.copy(
                             isLoading = false,
                             pokeList = pokeList,
-                            isNetworkError = false,
+                            errorMessage = null,
                         )
                     }
                 }
@@ -56,7 +57,7 @@ class PokeListViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            isNetworkError = true
+                            errorMessage = result.throwable.message ?: DEFAULT_ERROR,
                         )
                     }
                 }
@@ -73,7 +74,7 @@ class PokeListViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            isNetworkError = false,
+                            errorMessage = null,
                             pokeList = searchList,
                         )
                     }
@@ -82,7 +83,7 @@ class PokeListViewModel @Inject constructor(
                 is DataResult.Exception -> {
                     _uiState.update {
                         it.copy(
-                            isNetworkError = true,
+                            errorMessage = result.throwable.message ?: DEFAULT_ERROR,
                             isLoading = false,
                         )
                     }
@@ -116,6 +117,11 @@ class PokeListViewModel @Inject constructor(
             _uiState.update {
                 it.copy(pokeList = pokeList)
             }
+        }
+    }
+    fun onErrorShown() {
+        _uiState.update {
+            it.copy(errorMessage = null)
         }
     }
 }

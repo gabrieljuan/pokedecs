@@ -6,5 +6,5 @@ data class PokeDetailViewState(
     val pokeDetail: PokeDetail = PokeDetail(),
     val isFromCache: Boolean = false,
     val isLoading: Boolean = false,
-    val isError: Boolean = false,
+    val errorMessage: String? = null,
 )
