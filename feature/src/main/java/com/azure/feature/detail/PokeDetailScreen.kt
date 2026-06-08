@@ -1,8 +1,10 @@
 package com.azure.feature.detail
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,55 +25,86 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.azure.core.designsystem.theme.PokeDecsTheme
 import com.azure.core.designsystem.ui.AppBar
+import com.azure.core.designsystem.ui.LoadingState
+import com.azure.domain.model.Ability
+import com.azure.domain.model.PokeDetail
 
 @Composable
-fun PokeDetailScreen() {
-    val imageUrl = ""
-    val monsterName = ""
-    val type = ""
-    val weight = ""
-    val height = ""
-    val abilityList = listOf("")
+fun PokeDetailRoute(
+    pokeName: String,
+    onBackClick: () -> Unit,
+) {
+    val viewModel: PokeDetailViewModel = hiltViewModel()
+    val viewState = viewModel.uiState.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        viewModel.getPokeDetail(pokeName)
+    }
+    PokeDetailScreen(
+        pokeDetail = viewState.value.pokeDetail,
+        isLoading = viewState.value.isLoading,
+        onBackClick = onBackClick
+    )
+    BackHandler(onBack = onBackClick)
+}
 
+@Composable
+fun PokeDetailScreen(
+    pokeDetail: PokeDetail,
+    isLoading: Boolean,
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit,
+) {
     Scaffold(
         topBar = {
-            AppBar()
+            AppBar(onBackClick = onBackClick)
         }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier.padding(paddingValues),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Spacer(modifier = Modifier.height(64.dp))
-            PokeDetailHeader(
-                imageUrl = imageUrl,
-                name = monsterName,
+        if (isLoading) {
+            LoadingState(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            HorizontalDivider(
-                modifier = Modifier.fillMaxWidth(),
-                thickness = 1.dp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            PokeDetailBasicInfo(
-                type = type,
-                weight = weight,
-                height = height,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            HorizontalDivider(
-                modifier = Modifier.fillMaxWidth(),
-                thickness = 1.dp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            PokeDetailAbilityList(
-                modifier = Modifier.fillMaxWidth(),
-                abilityList = abilityList,
-            )
+        } else {
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(paddingValues),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(modifier = Modifier.height(64.dp))
+                PokeDetailHeader(
+                    imageUrl = pokeDetail.spriteUrl,
+                    name = pokeDetail.name,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = 1.dp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                PokeDetailBasicInfo(
+                    type = pokeDetail.element,
+                    weight = "${pokeDetail.weight}lbs",
+                    height = "${pokeDetail.height}ft",
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = 1.dp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                PokeDetailAbilityList(
+                    modifier = Modifier.fillMaxWidth(),
+                    abilityList = pokeDetail.abilities,
+                )
+            }
         }
     }
 }
@@ -105,7 +139,9 @@ private fun PokeDetailBasicInfo(
     height: String,
 ) {
     Text(
-        modifier = Modifier.padding(horizontal = 16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
         text = "Basic Info",
         style = MaterialTheme.typography.titleLarge,
         color = MaterialTheme.colorScheme.primary,
@@ -171,7 +207,7 @@ private fun PokeDetailBasicInfo(
 
 @Composable
 private fun PokeDetailAbilityList(
-    abilityList: List<String>,
+    abilityList: List<Ability>,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -188,7 +224,7 @@ private fun PokeDetailAbilityList(
         items(abilityList) { ability ->
             PokeAbilityListItem(
                 modifier = Modifier.fillMaxWidth(),
-                ability = ability,
+                ability = ability.name,
             )
         }
     }
@@ -227,7 +263,7 @@ private fun PokeDetailAbilityListPreview() {
     PokeDecsTheme {
         PokeDetailAbilityList(
             modifier = Modifier.fillMaxWidth(),
-            abilityList = listOf("Static", "Lightning Rod"),
+            abilityList = listOf(Ability("Static"), Ability("Lightning Rod")),
         )
     }
 }

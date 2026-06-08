@@ -5,7 +5,7 @@ import com.azure.data.remote.response.PokeListResponse
 import com.azure.domain.util.DataResult
 
 interface PokeApiLocalDataSource {
-    suspend fun savePokeList(pokeList: PokeListResponse): DataResult<Unit>
+    suspend fun savePokeList(pokeList: PokeListResponse, offset: Int): DataResult<Unit>
     suspend fun getPokeList(offset: Int, limit: Int): DataResult<PokeListResponse>
     suspend fun savePokeDetail(pokeDetail: PokeDetailResponse): DataResult<Unit>
     suspend fun getPokeDetail(name: String): DataResult<PokeDetailResponse>

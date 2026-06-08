@@ -1,10 +1,15 @@
 package com.azure.core.designsystem.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +24,7 @@ fun PokeButton(
     text: String,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    isLoading: Boolean = false,
     onClick: () -> Unit,
 ) {
     Button(
@@ -35,10 +41,17 @@ fun PokeButton(
                 MaterialTheme.colorScheme.onSurfaceVariant
         )
     ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.labelLarge
-        )
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(12.dp),
+                color = MaterialTheme.colorScheme.onPrimary,
+            )
+        } else {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelLarge
+            )
+        }
     }
 }
 
@@ -65,7 +78,7 @@ private fun PokeButtonPreview() {
             modifier = Modifier
                 .width(200.dp)
                 .padding(8.dp),
-            text = "Log In"
+            text = "Log In",
         ) { }
     }
 }

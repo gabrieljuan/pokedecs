@@ -35,11 +35,11 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun PokeSearchBar(
     value: String,
-    onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     placeholderText: String = "",
-    onSearchAction: (String) -> Unit,
     onClearClick: () -> Unit,
+    onValueChange: (String) -> Unit,
+    onSearchAction: ((String) -> Unit)? = null,
 ) {
     val textStyle = MaterialTheme.typography.bodyMedium
     val backgroundColor = Color.Transparent
@@ -64,7 +64,7 @@ fun PokeSearchBar(
         ),
         keyboardActions = KeyboardActions(
             onSearch = {
-                onSearchAction(value)
+                onSearchAction?.invoke(value)
             }
         ),
         cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
@@ -83,6 +83,9 @@ fun PokeSearchBar(
                     .clip(searchBarShape),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Spacer(Modifier.width(12.dp))
+                LeadingIcon()
+                Spacer(Modifier.width(8.dp))
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -93,11 +96,7 @@ fun PokeSearchBar(
                     }
                     innerTextField()
                 }
-
                 Spacer(Modifier.width(12.dp))
-                LeadingIcon()
-                Spacer(Modifier.width(8.dp))
-
                 if (value.isNotEmpty()) {
                     Spacer(Modifier.width(8.dp))
                     TrailingIcon {

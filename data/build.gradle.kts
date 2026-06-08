@@ -29,6 +29,8 @@ dependencies {
     implementation(project(":domain"))
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.kotlinx)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.couchbase.lite)
 

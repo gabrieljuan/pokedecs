@@ -27,6 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.azure.core.designsystem.theme.PokeDecsTheme
 import com.azure.core.designsystem.theme.TextSecondary
 import com.azure.core.designsystem.ui.PokeButton
@@ -35,15 +37,40 @@ import com.azure.core.designsystem.ui.PokeTextButton
 import com.azure.core.designsystem.ui.PokeTextField
 
 @Composable
+fun LoginRoute(
+    onBackClick: () -> Unit,
+    onLoginSuccess: (String) -> Unit,
+    onSignUpClick: () -> Unit,
+) {
+    val viewModel = hiltViewModel<LoginViewModel>()
+    val viewState = viewModel.uiState.collectAsStateWithLifecycle()
+    if (viewState.value.isLoginSuccess) {
+        onLoginSuccess(viewState.value.username)
+    }
+
+    LoginScreen(
+        isLoading = viewState.value.isLoading,
+        onBackClick = onBackClick,
+        onLoginClick = { username, password ->
+            viewModel.login(username, password)
+        },
+        onSignUpClick = onSignUpClick,
+    )
+}
+
+@Composable
 fun LoginScreen(
+    isLoading: Boolean,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    onLoginSuccess: () -> Unit,
+    onLoginClick: (username: String, password: String) -> Unit,
+    onSignUpClick: () -> Unit,
 ) {
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
 
     Scaffold(
+        modifier = modifier,
         containerColor = MaterialTheme.colorScheme.background,
     ) { paddingValues ->
         Column(
@@ -88,8 +115,12 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(24.dp))
             PokeButton(
                 modifier = Modifier.fillMaxWidth(),
-                text = "Log In"
-            ) { }
+                text = "Log In",
+                isLoading = isLoading,
+                onClick = {
+                    onLoginClick(username, password)
+                }
+            )
             Spacer(modifier = Modifier.height(16.dp))
             PokeTextButton(
                 modifier = Modifier.fillMaxWidth(),
@@ -107,8 +138,9 @@ fun LoginScreen(
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 PokeTextButton(
-                    text = "Sign Up"
-                ) { }
+                    text = "Sign Up",
+                    onClick = onSignUpClick
+                )
             }
         }
     }
@@ -120,7 +152,12 @@ fun LoginScreen(
 private fun LoginScreenPreview() {
     PokeDecsTheme {
         LoginScreen(
+            isLoading = false,
+            onLoginClick = { _, _ ->
+
+            },
+            onSignUpClick = {},
             onBackClick = {}
-        ) { }
+        )
     }
 }

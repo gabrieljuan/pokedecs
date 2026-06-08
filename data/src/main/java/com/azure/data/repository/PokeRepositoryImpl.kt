@@ -17,7 +17,7 @@ class PokeRepositoryImpl @Inject constructor(
     override suspend fun getPokeList(offset: Int, limit: Int): DataResult<List<Poke>> {
         val networkResult = networkDataSource.getPokeList(offset, limit)
         if (networkResult is DataResult.Success) {
-            localDataSource.savePokeList(networkResult.value)
+            localDataSource.savePokeList(networkResult.value, offset)
         } else {
             return localDataSource.getPokeList(offset, limit).mapToDomain { it.toDomain() }
         }

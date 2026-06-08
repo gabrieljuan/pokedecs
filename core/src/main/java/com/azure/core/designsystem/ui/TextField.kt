@@ -2,6 +2,7 @@ package com.azure.core.designsystem.ui
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -20,6 +21,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,6 +41,7 @@ fun PokeTextField(
     singleLine: Boolean = true,
     isError: Boolean = false,
     isPassword: Boolean = false,
+    isNumber: Boolean = false,
     onTrailingIconClick: (() -> Unit)? = null,
 ) {
     OutlinedTextField(
@@ -95,6 +98,11 @@ fun PokeTextField(
             PasswordVisualTransformation()
         } else {
             VisualTransformation.None
+        },
+        keyboardOptions = if (isNumber) {
+            KeyboardOptions(keyboardType = KeyboardType.Phone)
+        } else {
+            KeyboardOptions.Default
         }
     )
 }
