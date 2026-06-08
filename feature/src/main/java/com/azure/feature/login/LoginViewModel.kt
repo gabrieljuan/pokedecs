@@ -21,6 +21,9 @@ class LoginViewModel @Inject constructor(
     val uiState: StateFlow<LoginViewState> = _uiState
 
     fun login(username: String, password: String) {
+        _uiState.update {
+            it.copy(isLoading = true)
+        }
         viewModelScope.launch {
             when(val result = loginUseCase(username = username, password = password)){
                 is DataResult.Success -> {
