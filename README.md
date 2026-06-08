@@ -24,6 +24,10 @@ This apps use pokeapi.co API to display list and details of monsters. Login or r
 * Kotlin Coroutines and StateFlow
 * Sample Unit Test for PokeDetailViewModel
 
+## Things Could Be Improved
+* Event handling using `SharedFlow` for snackbar
+* Single list for search and list fetching (this is a bit hard since PokeApi doesn't support search API query)
+
 # License
 
 Now in Android is distributed under the terms of the Apache License (Version 2.0). See the
